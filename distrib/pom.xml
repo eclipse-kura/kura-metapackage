@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2025 Eurotech and/or its affiliates and others
+
+    This program and the accompanying materials are made
+    available under the terms of the Eclipse Public License 2.0
+    which is available at https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+     Eurotech
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.kura</groupId>
+        <artifactId>kura-metapackage</artifactId>
+        <version>6.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>kura-metapackage.distrib</artifactId>
+    <packaging>pom</packaging>
+
+    <organization>
+        <name>Eclipse Kura</name>
+        <url>https://eclipse.dev/kura/</url>
+    </organization>
+
+    <properties>
+    	
+        <!--
+            Available DEB architectures:
+            all, amd64, arm64
+        -->
+        <deb.architecture>all</deb.architecture>
+        <deb.dependencies>kura-core (&gt;= 6.0.0~), kura-core (&lt;&lt; 7.0.0~), kura-artemis (&gt;= 1.0.0~), kura-artemis (&lt;&lt; 2.0.0~), kura-bluetooth (&gt;= 2.0.0~), kura-bluetooth (&lt;&lt; 3.0.0~), kura-command (&gt;= 2.0.0~), kura-command (&lt;&lt; 3.0.0~), kura-management-ui (&gt;= 3.0.0~), kura-management-ui (&lt;&lt; 4.0.0~), kura-networking (&gt;= 3.0.0~), kura-networking (&lt;&lt; 4.0.0~), kura-position (&gt;= 2.0.0~), kura-position (&lt;&lt; 3.0.0~), kura-wires (&gt;= 3.0.0~), kura-wires (&lt;&lt; 4.0.0~)</deb.dependencies>
+        
+        <!-- final name of the generated debian package -->
+        <package.name>kura</package.name>
+
+        <!-- properties used for artifact upload on artifactory repository -->
+        <kura.repo.distribution>kura-6</kura.repo.distribution>
+        <kura.repo.module>base</kura.repo.module>
+
+        <!-- edit following fields and file deb/control/control -->
+        <summary>Eclipse Kura™</summary>
+        <long.description>Eclipse Kura™ is a Java/OSGI-based framework for IoT gateways. Kura APIs offer access to the underlying hardware (serial ports, GPS, watchdog, GPIOs, I2C, etc.), management of network configurations, communications with M2M/IoT Integration Platforms, and gateway management.</long.description>
+    </properties>
+
+    <profiles>
+        <!-- Internal profile: FOR INTERNAL USE ONLY - active if -DreleaseBuild is *not* specified. -->
+        <profile>
+            <id>debugBuild</id>
+            <activation>
+                <property>
+                    <name>!releaseBuild</name>
+                </property>
+            </activation>
+            <properties>
+                <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+                <package.snapshot>git${maven.build.timestamp}.${git.commit.id.abbrev}</package.snapshot>
+
+                <package.version>${release.version}~${package.snapshot}</package.version>
+                <package.revision>1</package.revision>
+            </properties>
+        </profile>
+        <!-- Internal profile: FOR INTERNAL USE ONLY - active if -DreleaseBuild *is* specified. -->
+        <profile>
+            <id>releaseBuild</id>
+            <activation>
+                <property>
+                    <name>releaseBuild</name>
+                </property>
+            </activation>
+            <properties>
+                <package.version>${release.version}</package.version>
+                <package.revision>1</package.revision>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <version>3.5.0</version>
+                        <executions>
+                            <execution>
+                                <id>enforce-no-snapshots</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <requireReleaseVersion>
+                                            <message>No snapshots allowed for release builds!</message>
+                                        </requireReleaseVersion>
+                                    </rules>
+                                    <fail>true</fail>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <build>
+        <plugins>
+            <!-- Responsible for removing the "-SNAPSHOT" from the project.version -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <id>regex-property</id>
+                        <goals>
+                            <goal>regex-property</goal>
+                        </goals>
+                        <configuration>
+                            <name>release.version</name>
+                            <value>${project.version}</value>
+                            <regex>-SNAPSHOT</regex>
+                            <replacement></replacement>
+                            <failIfNoMatch>false</failIfNoMatch>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Responsible for retrieving the short git commit (defaults to length 7) -->
+            <plugin>
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
+                <version>9.0.1</version>
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <injectAllReactorProjects>true</injectAllReactorProjects>
+                    <generateGitPropertiesFile>false</generateGitPropertiesFile>
+                    <skipPoms>false</skipPoms>
+                    <includeOnlyProperties>
+                        <includeOnlyProperty>^git.commit.id.abbrev$</includeOnlyProperty>
+                    </includeOnlyProperties>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.vafer</groupId>
+                <artifactId>jdeb</artifactId>
+                <version>1.12</version>
+                <executions>
+                    <execution>
+                        <id>generate-deb</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jdeb</goal>
+                        </goals>
+                        <configuration>
+                            <verbose>true</verbose>
+                            <deb>${basedir}/target/deb/${package.name}_${package.version}-${package.revision}_${deb.architecture}.deb</deb>
+                            <snapshotExpand>true</snapshotExpand>
+                            <snapshotTemplate>${package.snapshot}</snapshotTemplate>
+                            <controlDir>${project.basedir}/deb/control</controlDir>
+                            <skipPOMs>false</skipPOMs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>
