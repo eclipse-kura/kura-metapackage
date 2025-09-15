@@ -40,13 +40,8 @@ Supported platforms:
 - `RELEASE_BUILD`(optional):
     - If set to `1`, the build will use the latest available **release** version of the artifacts (i.e. it will look for the latest packages in the `kura-deb` repository and in the `kura-release` Maven repository).
     - If not set, the build will use the latest available **snapshot** version of the artifacts (i.e. it will look for the latest packages in the `kura-develop-deb`/`kura-develop-rpm` repositories and in the `kura-snapshot` Maven repository).
-- `CONTAINER_SECURITY_MANAGER_VERSION`(optional):
-    - If set, the build will look for the specified version of the Container Security Manager artifacts.
-    - If not set, the build will use the latest available version.
 
 ## Run the container
-
-Replace `<master_password>` with a unique 32 characters password.
 
 ```
 docker run -p 443:443 -it kura
