@@ -54,9 +54,11 @@ COPY ./log4j.xml /opt/eclipse/kura/log4j/log4j.xml
 
 EXPOSE 443
 LABEL org.opencontainers.image.vendor="Eclipse Kura"
-LABEL org.opencontainers.image.authors="Eclipse Kura"
+LABEL org.opencontainers.image.authors="Eclipse Kura (kura-dev@eclipse.org)"
+LABEL org.opencontainers.image.source="https://github.com/eclipse-kura/kura-metapackage"
 LABEL org.opencontainers.image.description="Eclipse Kura Core Docker image for Debian Bullseye"
 LABEL org.opencontainers.image.documentation="https://hub.docker.com/r/eclipse/kura"
+LABEL org.opencontainers.image.url="https://eclipse-kura.github.io/kura/latest/"
 LABEL org.opencontainers.image.title="Eclipse Kura Core Docker Debian Image"
 
 ENTRYPOINT ["/opt/eclipse/kura/bin/start_kura.sh"]
@@ -75,9 +77,11 @@ RUN --mount=type=bind,from=builder,source=/workdir,target=/tmp/packages \
 
 EXPOSE 443
 LABEL org.opencontainers.image.vendor="Eclipse Kura"
-LABEL org.opencontainers.image.authors="Eclipse Kura"
+LABEL org.opencontainers.image.authors="Eclipse Kura (kura-dev@eclipse.org)"
+LABEL org.opencontainers.image.source="https://github.com/eclipse-kura/kura-metapackage"
 LABEL org.opencontainers.image.description="Eclipse Kura Docker image for Debian Bullseye"
 LABEL org.opencontainers.image.documentation="https://hub.docker.com/r/eclipse/kura"
+LABEL org.opencontainers.image.url="https://eclipse-kura.github.io/kura/latest/"
 LABEL org.opencontainers.image.title="Eclipse Kura Docker Debian Image"
 
 ENTRYPOINT ["/opt/eclipse/kura/bin/start_kura.sh"]
