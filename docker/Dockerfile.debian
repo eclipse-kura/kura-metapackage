@@ -16,10 +16,9 @@ RUN apt update && \
 SHELL ["/bin/bash", "-c"]
 
 RUN if [ "$RELEASE_BUILD" -eq 1 ]; then \
-        NEXUS_REPO="kura-6"; \
-    else \
-        # FIXME: Not final repository \
         NEXUS_REPO="kura-apt"; \
+    else \
+        NEXUS_REPO="kura-apt-dev"; \
     fi && \
     echo "deb https://repo3.eclipse.org/repository/${NEXUS_REPO}/ bionic main" | tee /etc/apt/sources.list.d/kura.list
 
