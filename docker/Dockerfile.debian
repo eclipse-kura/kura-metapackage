@@ -30,8 +30,12 @@ WORKDIR /workdir
 
 RUN apt update && apt download \
     kura-core \
-    # FIXME: Add missing packages \
-    kura-management-ui
+    kura-artemis \
+    kura-bluetooth \
+    kura-command \
+    kura-management-ui \
+    kura-position \
+    kura-wires
 
 # ======================================================================
 # Core runtime image
