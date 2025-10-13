@@ -68,6 +68,6 @@
             <AppenderRef ref="Console"/>
             <AppenderRef ref="RollingFile"/>
         </Root>
-  </Loggers>
+    </Loggers>
 
 </Configuration>
