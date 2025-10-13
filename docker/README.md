@@ -26,7 +26,7 @@ Replace `<platform>` with the desired platform (`linux/amd64` or `linux/arm64`),
 
 ```bash
 docker build \
-    -f Dockerfile.<image> \
+    -f Dockerfile.debian \
     --platform <platform> \
     -t kura .
 ```
