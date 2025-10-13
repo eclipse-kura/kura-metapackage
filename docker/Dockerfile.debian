@@ -33,6 +33,7 @@ RUN apt update && apt download \
     kura-artemis \
     kura-command \
     kura-management-ui \
+    kura-opcua \
     kura-position \
     kura-wires
 
