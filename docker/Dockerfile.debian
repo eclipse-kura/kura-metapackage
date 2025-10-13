@@ -31,7 +31,6 @@ WORKDIR /workdir
 RUN apt update && apt download \
     kura-core \
     kura-artemis \
-    kura-bluetooth \
     kura-command \
     kura-management-ui \
     kura-position \
