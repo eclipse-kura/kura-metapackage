@@ -1,0 +1,92 @@
+# ======================================================================
+# Builder image
+# ======================================================================
+FROM debian:trixie-slim AS builder
+
+ARG RELEASE_BUILD=0
+
+RUN apt update && \
+    apt install -y \
+    jq \
+    curl \
+    wget \
+    gpg \
+    equivs
+
+SHELL ["/bin/bash", "-c"]
+
+RUN if [ "$RELEASE_BUILD" -eq 1 ]; then \
+        NEXUS_REPO="kura-apt"; \
+        NEXUS_DISTR="stable"; \
+    else \
+        NEXUS_REPO="kura-apt-dev"; \
+        NEXUS_DISTR="unstable"; \
+    fi && \
+    echo "deb https://repo3.eclipse.org/repository/${NEXUS_REPO}/ ${NEXUS_DISTR} main" | tee /etc/apt/sources.list.d/kura.list
+
+RUN curl -L "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xba7e3df5edc3fc36" | gpg --dearmor | tee /etc/apt/trusted.gpg.d/kura.gpg > /dev/null
+
+WORKDIR /workdir
+
+RUN apt update && apt download \
+    kura-core \
+    kura-artemis \
+    kura-command \
+    kura-management-ui \
+    kura-opcua \
+    kura-position \
+    kura-wires
+
+# ======================================================================
+# Core runtime image
+# ======================================================================
+FROM debian:trixie-slim AS core-runtime
+
+RUN --mount=type=bind,from=builder,source=/workdir,target=/tmp/packages \
+    apt update && \
+    apt install wget -y && \
+# Install Kura packages \
+    apt install --no-install-recommends -y /tmp/packages/kura-core_*.deb && \
+# Remove ClockService \
+    rm /opt/eclipse/kura/plugins/4/org.eclipse.kura.linux.clock*.jar && \
+# Remove Container Orchestration Service \
+    rm /opt/eclipse/kura/plugins/4s/org.eclipse.kura.container.orchestration.provider*.jar && \
+    rm /opt/eclipse/kura/plugins/4s/org.eclipse.kura.container.provider*.jar && \
+# Clean up \
+    rm -rf /var/lib/apt/lists/*
+
+COPY ./log4j.xml /opt/eclipse/kura/log4j/log4j.xml
+
+EXPOSE 443
+LABEL org.opencontainers.image.vendor="Eclipse Kura"
+LABEL org.opencontainers.image.authors="Eclipse Kura (kura-dev@eclipse.org)"
+LABEL org.opencontainers.image.source="https://github.com/eclipse-kura/kura-metapackage"
+LABEL org.opencontainers.image.description="Eclipse Kura Core Docker image for Debian Trixie"
+LABEL org.opencontainers.image.documentation="https://hub.docker.com/r/eclipse/kura"
+LABEL org.opencontainers.image.url="https://eclipse-kura.github.io/kura/latest/"
+LABEL org.opencontainers.image.title="Eclipse Kura Core Docker Debian Image"
+
+ENTRYPOINT ["/opt/eclipse/kura/bin/start_kura.sh"]
+
+# ======================================================================
+# Runtime image
+# ======================================================================
+FROM core-runtime AS runtime
+
+RUN --mount=type=bind,from=builder,source=/workdir,target=/tmp/packages \
+# Install Kura packages \
+    apt update && \
+    find /tmp/packages -name "*.deb" -print0 | xargs -0 apt install --no-install-recommends -y && \
+# Clean up \
+    rm -rf /var/lib/apt/lists/*
+
+EXPOSE 443
+LABEL org.opencontainers.image.vendor="Eclipse Kura"
+LABEL org.opencontainers.image.authors="Eclipse Kura (kura-dev@eclipse.org)"
+LABEL org.opencontainers.image.source="https://github.com/eclipse-kura/kura-metapackage"
+LABEL org.opencontainers.image.description="Eclipse Kura Docker image for Debian Trixie"
+LABEL org.opencontainers.image.documentation="https://hub.docker.com/r/eclipse/kura"
+LABEL org.opencontainers.image.url="https://eclipse-kura.github.io/kura/latest/"
+LABEL org.opencontainers.image.title="Eclipse Kura Docker Debian Image"
+
+ENTRYPOINT ["/opt/eclipse/kura/bin/start_kura.sh"]
