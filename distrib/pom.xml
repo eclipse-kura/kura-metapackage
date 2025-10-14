@@ -40,7 +40,7 @@
             all, amd64, arm64
         -->
         <deb.architecture>all</deb.architecture>
-        <deb.dependencies>kura-core (&gt;= 6.0.0~), kura-core (&lt;&lt; 7.0.0~), kura-artemis (&gt;= 1.0.0~), kura-artemis (&lt;&lt; 2.0.0~), kura-bluetooth (&gt;= 2.0.0~), kura-bluetooth (&lt;&lt; 3.0.0~), kura-command (&gt;= 2.0.0~), kura-command (&lt;&lt; 3.0.0~), kura-management-ui (&gt;= 3.0.0~), kura-management-ui (&lt;&lt; 4.0.0~), kura-networking (&gt;= 3.0.0~), kura-networking (&lt;&lt; 4.0.0~), kura-position (&gt;= 2.0.0~), kura-position (&lt;&lt; 3.0.0~), kura-wires (&gt;= 3.0.0~), kura-wires (&lt;&lt; 4.0.0~)</deb.dependencies>
+        <deb.dependencies>kura-core (&gt;= 6.0.0~), kura-core (&lt;&lt; 7.0.0~), kura-artemis (&gt;= 3.0.0~), kura-artemis (&lt;&lt; 4.0.0~), kura-bluetooth (&gt;= 2.0.0~), kura-bluetooth (&lt;&lt; 3.0.0~), kura-command (&gt;= 2.0.0~), kura-command (&lt;&lt; 3.0.0~), kura-management-ui (&gt;= 3.0.0~), kura-management-ui (&lt;&lt; 4.0.0~), kura-networking (&gt;= 3.0.0~), kura-networking (&lt;&lt; 4.0.0~), kura-position (&gt;= 2.0.0~), kura-position (&lt;&lt; 3.0.0~), kura-wires (&gt;= 3.0.0~), kura-wires (&lt;&lt; 4.0.0~)</deb.dependencies>
         
         <!-- final name of the generated debian package -->
         <package.name>kura</package.name>
