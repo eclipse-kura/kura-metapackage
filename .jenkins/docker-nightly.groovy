@@ -15,13 +15,15 @@ timeout(time:90, unit:'MINUTES') {
 
             withEnv(["HOME=${env.WORKSPACE}"]){
                 stage('build') {
-                    container('containertools') {
-                        containerBuild(
-                            credentialsId: 'docker-bot-token',
-                            name: 'docker.io/eclipsekura/kura',
-                            version: 'nightly',
-                            dockerfile: 'docker/Dockerfile.debian'
-                        )
+                    dir('docker') {
+                        container('containertools') {
+                            containerBuild(
+                                credentialsId: 'docker-bot-token',
+                                name: 'docker.io/eclipsekura/kura',
+                                version: 'nightly',
+                                dockerfile: 'Dockerfile.debian'
+                            )
+                        }
                     }
                 }
             }
