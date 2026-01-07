@@ -7,7 +7,7 @@ timeout(time:90, unit:'MINUTES') {
                 buildDiscarder(logRotator(numToKeepStr: '5')),
                 disableConcurrentBuilds(),
                 pipelineTriggers([
-                    cron('H H * * H')
+                    cron('H 0 * * 6') // Run on Saturday night
                 ])
             ])
 
