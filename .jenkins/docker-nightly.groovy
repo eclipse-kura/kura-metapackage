@@ -18,6 +18,7 @@ timeout(time:90, unit:'MINUTES') {
                     dir('docker') {
                         container('containertools') {
                             containerBuild(
+                                annotation: false,
                                 credentialsId: 'docker-bot-token',
                                 name: 'docker.io/eclipsekura/kura',
                                 version: 'nightly',
