@@ -22,7 +22,7 @@ RUN if [ "$RELEASE_BUILD" -eq 1 ]; then \
         NEXUS_REPO="kura-apt-dev"; \
         NEXUS_DISTR="unstable"; \
     fi && \
-    echo "deb https://repo3.eclipse.org/repository/${NEXUS_REPO}/ ${NEXUS_DISTR} main" | tee /etc/apt/sources.list.d/kura.list
+    echo "deb https://repo.eclipse.org/repository/${NEXUS_REPO}/ ${NEXUS_DISTR} main" | tee /etc/apt/sources.list.d/kura.list
 
 RUN curl -L "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xba7e3df5edc3fc36" | gpg --dearmor | tee /etc/apt/trusted.gpg.d/kura.gpg > /dev/null
 
