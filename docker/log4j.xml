@@ -37,7 +37,7 @@
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>
         <RollingFile name="audit" fileName="${log_dir}/${log_name}-audit.log" filePattern="${log_dir}/${log_name}-audit-%i.log.gz">
-            <RFC5424Layout enterpriseNumber="28392" includeMDC="true" mdcId="RequestContext" appName="EclipseKura" mdcPrefix="" newLine="true">
+            <Rfc5424Layout enterpriseNumber="28392" includeMDC="true" mdcId="RequestContext" appName="EclipseKura" mdcPrefix="" includeNL="true">
                 <LoggerFields>
                     <KeyValuePair key="thread" value="%t"/>
                     <KeyValuePair key="priority" value="%p"/>
