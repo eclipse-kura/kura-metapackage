@@ -15,6 +15,10 @@ RUN apt update && \
 
 SHELL ["/bin/bash", "-c"]
 
+RUN curl -fsSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xBA7E3DF5EDC3FC36" \
+  | gpg --dearmor \
+  | tee /etc/apt/keyrings/kura.gpg > /dev/null
+
 RUN if [ "$RELEASE_BUILD" -eq 1 ]; then \
         NEXUS_REPO="kura-apt"; \
         NEXUS_DISTR="stable"; \
@@ -22,17 +26,15 @@ RUN if [ "$RELEASE_BUILD" -eq 1 ]; then \
         NEXUS_REPO="kura-apt-dev"; \
         NEXUS_DISTR="unstable"; \
     fi && \
-    curl -fsSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xBA7E3DF5EDC3FC36" \
-  | gpg --dearmor \
-  | tee /etc/apt/keyrings/kura.gpg > /dev/null
-
-RUN tee /etc/apt/sources.list.d/kura.sources > /dev/null << 'EOF'
+    tee /etc/apt/sources.list.d/kura.sources > /dev/null << EOF
 Types: deb
 URIs: https://repo.eclipse.org/repository/${NEXUS_REPO}/
 Suites: ${NEXUS_DISTR}
 Components: main
 Signed-By: /etc/apt/keyrings/kura.gpg
 EOF
+
+RUN cat /etc/apt/sources.list.d/kura.sources
 
 WORKDIR /workdir
 
