@@ -44,7 +44,7 @@
                     <KeyValuePair key="category" value="%c"/>
                     <KeyValuePair key="exception" value="%ex"/>
                 </LoggerFields>
-            </RFC5424Layout>
+            </Rfc5424Layout>
             <Policies>
                 <SizeBasedTriggeringPolicy size="20 MB"/>
             </Policies>
